@@ -4,7 +4,7 @@ import {
 } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form'
 import { Link } from 'react-router-dom';
-
+import { Loading } from './LoadingComponent'
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
@@ -136,10 +136,10 @@ function RenderComments({ comments, addComment, dishId }) {
                 <h4>Comments</h4>
                 <ul className="list-unstyled">
                     <li>
-                    {commentList}
+                        {commentList}
                     </li>
                 </ul>
-                    <CommentForm dishId={dishId} addComment={addComment} />
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>
         );
     }
@@ -154,7 +154,26 @@ function RenderComments({ comments, addComment, dishId }) {
 }
 
 const Dishdetail = (props) => {
-    if (props.dish != null)
+    if (props.isLoading) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <Loading />
+                </div>
+            </div>
+        );
+    }
+    else if (props.errMess) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <h4>{props.errMess}</h4>
+                </div>
+            </div>
+        );
+    }
+
+    else if (props.dish != null)
         return (
             <div className="container">
                 <div className="row">
@@ -173,7 +192,7 @@ const Dishdetail = (props) => {
                 </div>
                 <div className="row">
                     <RenderDish dish={props.dish} />
-                    <RenderComments comments={props.comments} 
+                    <RenderComments comments={props.comments}
                         addComment={props.addComment}
                         dishId={props.dish.id} />
 
